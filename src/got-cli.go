@@ -11,6 +11,9 @@ import (
 func main() {
 
 	// create log sub command
+	listCommand := flag.NewFlagSet("list", flag.ExitOnError)
+	listOption := listCommand.String("type", "exercise", "Metric {exercise|log};. (Required)")
+
 	logCommand := flag.NewFlagSet("log", flag.ExitOnError)
 	exerciseFlag := logCommand.String("name", "", "name of the exercise (required).")
 	repFlag := logCommand.Int("rep", 10, "Number of Reps")
@@ -19,10 +22,14 @@ func main() {
 	newExerciseName := createCommand.String("name", "", "name of the new exercise (required)")
 
 	flag.Parse() // reads the cli args
-	if len(os.Args) < 2 {
-		fmt.Println("commands: log, create")
+	if len(os.Args) == 0 {
+		fmt.Println("commands: list, log, create")
+		fmt.Println("list [options]")
+		listCommand.PrintDefaults()
+
 		fmt.Println("log [options]")
 		logCommand.PrintDefaults()
+
 		fmt.Println("create [options]")
 		createCommand.PrintDefaults()
 
@@ -30,6 +37,24 @@ func main() {
 	}
 
 	switch os.Args[1] {
+	case "list":
+		listCommand.Parse(os.Args[2:])
+		if listCommand.Parsed() {
+			listResult := ""
+
+			switch *listOption {
+			case "exercise":
+				listResult = exercise.List()
+			default:
+				listResult = fmt.Sprintf("%s is not implemented", *listOption)
+			}
+
+			fmt.Printf(listResult)
+		} else {
+			listCommand.PrintDefaults()
+			os.Exit(1)
+		}
+
 	case "log":
 		logCommand.Parse(os.Args[2:])
 
