@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"go-exercise-tracker/log"
 	"os"
 	"strings"
 )
@@ -15,7 +16,7 @@ func main() {
 	repFlag := logCommand.Int("rep", 10, "Number of Reps")
 
 	createCommand := flag.NewFlagSet("create", flag.ExitOnError)
-	newExerciseName := createCommand.String("Name", "", "name of the new exercise (required)")
+	newExerciseName := createCommand.String("name", "", "name of the new exercise (required)")
 
 	flag.Parse() // reads the cli args
 	if len(os.Args) < 2 {
@@ -34,6 +35,7 @@ func main() {
 
 	case "create":
 		createCommand.Parse(os.Args[2:])
+
 	default:
 		flag.PrintDefaults()
 		os.Exit(1)
@@ -44,8 +46,8 @@ func main() {
 			logCommand.PrintDefaults()
 			os.Exit(1)
 		}
-
-		fmt.Printf("successfully logged: %d of %s", *repFlag, *exerciseFlag)
+		logResult := exercise.Log(*exerciseFlag, *repFlag)
+		fmt.Printf(logResult)
 	}
 
 	if createCommand.Parsed() {
@@ -53,7 +55,7 @@ func main() {
 			createCommand.PrintDefaults()
 			os.Exit(1)
 		}
-		fmt.Printf("successfully created: %s", *newExerciseName)
+		createResult := exercise.Create(*newExerciseName)
+		fmt.Printf(createResult)
 	}
-
 }
