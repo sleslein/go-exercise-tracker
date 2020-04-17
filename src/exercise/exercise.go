@@ -6,10 +6,39 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 )
 
 // Log the exercise and returns a message
 func Log(name string, reps int) string {
+	const logFileName string = "../exercise-log.txt"
+
+	var f os.File
+
+	if _, err := os.Stat(logFileName); os.IsNotExist(err) {
+		newFile, createErr := os.Create(logFileName)
+		if createErr != nil {
+			log.Fatal(createErr)
+		}
+		f = *newFile
+	} else {
+		existingFile, openErr := os.OpenFile(logFileName, os.O_APPEND, os.ModeAppend)
+		if openErr != nil {
+			log.Fatal(openErr)
+		}
+		f = *existingFile
+	}
+
+	defer f.Close()
+	currentTime := time.Now()
+
+	message := fmt.Sprintf("%s: %d of %s \n", currentTime.Format("2006-01-02 15:04"), reps, name)
+	_, writeErr := f.WriteString(message)
+
+	if writeErr != nil {
+		log.Fatal(writeErr)
+	}
+
 	s := fmt.Sprintf("Successfully logged: %d of %s", reps, name)
 	return s
 }
@@ -28,7 +57,7 @@ func Create(name string) string {
 		log.Fatal(readErr)
 		os.Exit(1)
 	}
-	
+
 	exercises := string(b)
 	if strings.Contains(exercises, name) {
 		return fmt.Sprintf("%s already exists", name)
