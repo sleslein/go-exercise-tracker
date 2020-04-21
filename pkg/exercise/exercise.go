@@ -11,7 +11,7 @@ import (
 
 // Log the exercise and returns a message
 func Log(name string, reps int) string {
-	const logFileName string = "../exercise-log.txt"
+	const logFileName string = "./exercise-log.txt"
 
 	var f os.File
 
@@ -45,7 +45,7 @@ func Log(name string, reps int) string {
 
 // Create a new exercise
 func Create(name string) string {
-	file, err := os.OpenFile("../exercise.txt", os.O_APPEND, os.ModeAppend)
+	file, err := os.OpenFile("./exercise.txt", os.O_APPEND, os.ModeAppend)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,7 +74,7 @@ func Create(name string) string {
 
 // List all exercises
 func List() string {
-	file, err := os.Open("../exercise.txt")
+	file, err := os.Open("./exercise.txt")
 	if err != nil {
 		log.Fatal(err)
 	}

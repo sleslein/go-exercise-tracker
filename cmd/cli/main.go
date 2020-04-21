@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"go-exercise-tracker/exercise"
+	"go-exercise-tracker/pkg/exercise"
 	"os"
 	"strings"
 )
